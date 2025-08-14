@@ -5,10 +5,12 @@ import com.fratzkian.user.dto.UserResponse;
 import com.fratzkian.user.model.User;
 import com.fratzkian.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -57,6 +59,7 @@ public class UserService {
     }
 
     public Boolean existByUserId(String userId) {
+        log.info("Calling User Validation API for userId: {}", userId);
         return userRepository.existsById(userId);
     }
 }
