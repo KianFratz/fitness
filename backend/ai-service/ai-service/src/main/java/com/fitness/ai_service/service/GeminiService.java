@@ -3,6 +3,7 @@ package com.fitness.ai_service.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Map;
 
@@ -22,27 +23,28 @@ public class GeminiService {
 
     public String getAnswer(String question) {
         Map<String, Object> requestBody = Map.of(
-                "candidates", new Object[] {
-                        Map.of("content", new Object[] {
+                "contents", new Object[] {
+                        Map.of(
+                        "parts", new Object[] {
                                 Map.of(
-                                        "parts", new Object[] {
-                                                Map.of(
-                                                        "text", question
-                                                )
-                                        }
+                                "text", question
                                 )
-                        })
+                            }
+                        )
                 }
         );
 
-        String response = webClient.post()
-                .uri(geminiApiUrl + geminiApiKey)
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-        return response;
+        try {
+            return webClient.post()
+                    .uri(geminiApiUrl + geminiApiKey)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            System.err.println("Gemini API error: " + e.getResponseBodyAsString());
+            throw e;
+        }
     }
 }
