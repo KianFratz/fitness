@@ -1,11 +1,13 @@
 package com.fitness.ai_service.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.ai_service.model.Activity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -17,8 +19,66 @@ public class ActivityAIService {
         String prompt = createPromptForActivity(activity);
         String response = geminiService.getAnswer(prompt);
         log.info("Response from AI {} ", response);
-
+        processAiResponse(activity, response);
         return response;
+    }
+
+    private void processAiResponse(Activity activity, String response) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+
+            JsonNode textNode = rootNode.path("candidates")
+                    .get(0)
+                    .path("content")
+                    .path("parts")
+                    .get(0)
+                    .path("text");
+
+            String jsonContent = textNode.asText()
+                    .replaceAll("```json\\n", "")
+                    .replaceAll("\\n```", "")
+                    .trim();
+
+//            log.info("Parsed Response from AI: {} ", jsonContent);
+
+            JsonNode analysisJson = objectMapper.readTree(jsonContent);
+            JsonNode analysisNode = analysisJson.path("analysis");
+            StringBuilder fullAnalysis = new StringBuilder();
+
+            addAnalysisSection(fullAnalysis, analysisNode, "overall", "Overall:");
+            addAnalysisSection(fullAnalysis, analysisNode, "pace", "Pace:");
+            addAnalysisSection(fullAnalysis, analysisNode, "heartRate", "Heart Rate:");
+            addAnalysisSection(fullAnalysis, analysisNode, "caloriesBurned", "Calories Burned:");
+
+            List<String> improvementsNode = extractImprovements(analysisJson.path("improvements"));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<String> extractImprovements(JsonNode improvementsNode) {
+        List<String> improvements = new ArrayList<>();
+
+        if(improvementsNode.isArray()) {
+            improvementsNode.forEach(improvement -> {
+                String area = improvement.path("area").asText();
+                String recommendation = improvement.path("recommendation").asText();
+                improvements.add(String.format("%s, %s", area, recommendation));
+            });
+            return improvements.isEmpty() ?
+                    Collections.singletonList("No specific improvements provided") :
+                    improvements;
+        }
+    }
+
+    private void addAnalysisSection(StringBuilder fullAnalysis, JsonNode analysisNode, String key, String prefix {
+        if (!analysisNode.path(key).isMissingNode()) {
+            fullAnalysis.append(prefix)
+                    .append(analysisNode.path(key).asText())
+                    .append("\n\n");
+        }
     }
 
     private String createPromptForActivity(Activity activity) {
