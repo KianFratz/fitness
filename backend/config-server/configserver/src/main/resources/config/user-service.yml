@@ -1,0 +1,24 @@
+spring:
+    application:
+        name: user
+    datasource:
+        url: jdbc:postgresql://localhost:5332/fitness
+        username: fratzkian
+        password: Ki@Npagobo123
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        properties:
+            hibernate:
+                format_sql: true
+        show-sql: true
+
+server:
+  port: 8081
+
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka/
