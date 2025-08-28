@@ -1,6 +1,4 @@
 spring:
-    application:
-        name: user
     datasource:
         url: jdbc:postgresql://localhost:5332/fitness
         username: fratzkian
