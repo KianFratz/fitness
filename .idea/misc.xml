@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/backend/ai-service/ai-service/pom.xml" />
         <option value="$PROJECT_DIR$/backend/configserver/configserver/pom.xml" />
         <option value="$PROJECT_DIR$/backend/config-server/configserver/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/gateway/gateway/pom.xml" />
       </list>
     </option>
   </component>
