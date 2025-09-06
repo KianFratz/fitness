@@ -37,12 +37,12 @@ public class UserService {
 
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
+        user.setKeycloakId(request.getKeycloakId());
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
-
         User savedUser = userRepository.save(user);
-        UserResponse userResponse = new UserResponse();
 
+        UserResponse userResponse = new UserResponse();
         userResponse.setId(savedUser.getId());
         userResponse.setKeycloakId(savedUser.getKeycloakId());
         userResponse.setEmail(savedUser.getEmail());
