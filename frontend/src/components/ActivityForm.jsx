@@ -1,8 +1,9 @@
 import { duration, FormControl, InputLabel, TextField } from "@mui/material";
 import {React, useState} from "react";
 import { Button, Box, Select, MenuItem } from "@mui/material";
+import { addActivity } from '../services/api'
 
-const ActivityForm = ({ onActivityAdded}) => {
+const ActivityForm = ({ onActivityAdded }) => {
 
   const [activity, setActivity] = useState({
     type: "RUNNING",
@@ -17,7 +18,9 @@ const ActivityForm = ({ onActivityAdded}) => {
       await addActivity(activity);
       onActivityAdded();
       setActivity({ type: "RUNNING", duration: "", caloriesBurned: "" });
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
