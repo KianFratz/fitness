@@ -12,40 +12,27 @@ import { addActivity } from "../services/api";
 
 const ActivityForm = ({ onActivityAdded }) => {
   const [activity, setActivity] = useState({
-    type: "RUNNING",
+    activityType: "RUNNING",
     duration: "",
     caloriesBurned: "",
     additionalMetrics: {},
   });
 
-  const handleChange = (field, value) => {
-    setActivity((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault(); // 🔑 prevent full page reload
-    console.log("handleSubmit fired ✅"); // <-- Debug log
     console.log("Sending activity payload:", activity);
 
     try {
-      await addActivity({
-        ...activity,
-        duration: Number(activity.duration),
-        caloriesBurned: Number(activity.caloriesBurned),
-      });
+      await addActivity(activity)
 
       // Tell parent to refresh activities
       onActivityAdded();
 
       // Reset form
       setActivity({
-        type: "RUNNING",
+        activityType: "RUNNING",
         duration: "",
         caloriesBurned: "",
-        additionalMetrics: {},
       });
     } catch (error) {
       console.error("Error adding activity:", error);
@@ -55,11 +42,11 @@ const ActivityForm = ({ onActivityAdded }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel id="activity-type-label">Activity Type</InputLabel>
+        <InputLabel id="activityType">Activity Type</InputLabel>
         <Select
-          labelId="activity-type-label"
-          value={activity.type}
-          onChange={(e) => handleChange("type", e.target.value)}
+          labelId="activityType"
+          value={activity.activityType}
+          onChange={(e) => setActivity("activityType", e.target.value)}
         >
           <MenuItem value="RUNNING">Running</MenuItem>
           <MenuItem value="SWIMMING">Swimming</MenuItem>
@@ -80,7 +67,7 @@ const ActivityForm = ({ onActivityAdded }) => {
         type="number"
         sx={{ mb: 2 }}
         value={activity.duration}
-        onChange={(e) => handleChange("duration", e.target.value)}
+        onChange={(e) => setActivity({...activity, duration: e.target.value})}
       />
 
       <TextField
@@ -89,7 +76,7 @@ const ActivityForm = ({ onActivityAdded }) => {
         type="number"
         sx={{ mb: 2 }}
         value={activity.caloriesBurned}
-        onChange={(e) => handleChange("caloriesBurned", e.target.value)}
+        onChange={(e) => setActivity({...activity, caloriesBurned: e.target.value})}
       />
 
       <Button type="submit" variant="contained">
