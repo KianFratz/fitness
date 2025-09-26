@@ -31,7 +31,7 @@ function ActivityList() {
       )}
 
       {activities.map((activity) => (
-        <Grid item xs={12} sm={6} md={4} key={activity.id}>
+        <Grid size={{xs: 12, sm: 6, md: 4}} key={activity.id}>
           <Card
             sx={{ cursor: "pointer" }}
             onClick={() => navigate(`/activities/${activity.id}`)}

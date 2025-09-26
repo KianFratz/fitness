@@ -44,20 +44,13 @@ const ActivityForm = ({ onActivityAdded }) => {
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="activityType">Activity Type</InputLabel>
         <Select
-          labelId="activityType"
           value={activity.activityType}
-          onChange={(e) => setActivity("activityType", e.target.value)}
+          onChange={(e) => setActivity({...activity, activityType: e.target.value})}
         >
           <MenuItem value="RUNNING">Running</MenuItem>
           <MenuItem value="SWIMMING">Swimming</MenuItem>
           <MenuItem value="WALKING">Walking</MenuItem>
           <MenuItem value="CYCLING">Cycling</MenuItem>
-          <MenuItem value="LIFTING">Lifting</MenuItem>
-          <MenuItem value="YOGA">Yoga</MenuItem>
-          <MenuItem value="HIIT">HIIT</MenuItem>
-          <MenuItem value="CARDIO">Cardio</MenuItem>
-          <MenuItem value="STRETCHING">Stretching</MenuItem>
-          <MenuItem value="OTHER">Other</MenuItem>
         </Select>
       </FormControl>
 
